@@ -1,0 +1,7 @@
+## find *.h file location ##
+echo "#include <mariadb/mysql.h>" > trial.c
+gcc -H -fsyntax-only trial.c
+
+
+## find *.so file location ##
+ldconfig -p | grep libmysql
