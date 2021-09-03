@@ -139,6 +139,18 @@ handle_request(
         return res;
     };
 
+    auto const unk_request =
+    [&req](beast::string_view target)
+    {
+        http::response<http::string_body> res{http::status::not_found, req.version()};
+        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::content_type, "text/html");
+        res.keep_alive(req.keep_alive());
+        res.body() = "The request '" + std::string(target) + "' was not defined.";
+        res.prepare_payload();
+        return res;
+    };
+
     // Returns a server error response
     auto const server_error =
     [&req](beast::string_view what)
@@ -152,20 +164,48 @@ handle_request(
         return res;
     };
 
+    auto const api_response =
+    [&req](std::string resp)
+    {
+        http::response<http::string_body> res{http::status::ok, req.version()};
+        res.set(http::field::server, BOOST_BEAST_VERSION_STRING);
+        res.set(http::field::content_type, "text/html");
+        res.keep_alive(req.keep_alive());
+        res.body() = "resp: '" + std::string(resp) + "'";
+        res.prepare_payload();
+        return res;
+    };
+
     // Make sure we can handle the method
     if( req.method() != http::verb::get &&
         req.method() != http::verb::head)
         return send(bad_request("Unknown HTTP-method"));
 
+    std::string rtarget = std::string(req.target());
+    std::string static_root = "/static/";
+    std::string api_root = "/api/";
+
     // Request path must be absolute and not contain "..".
-    if( req.target().empty() ||
-        req.target()[0] != '/' ||
-        req.target().find("..") != beast::string_view::npos)
+    if( rtarget.empty() ||
+        rtarget[0] != '/' ||
+        rtarget.find("..") != beast::string_view::npos)
         return send(bad_request("Illegal request-target"));
 
+    std::string target = "/";
+    if (rtarget.rfind(static_root, 0) == 0)
+    {
+        target = rtarget.substr(static_root.length()-1);
+    } else if (rtarget.rfind(api_root, 0) == 0) 
+    {
+        target = rtarget.substr(api_root.length()-1);
+        return send(api_response(target));
+    } else 
+    {
+        return send(unk_request(req.target()));
+    }
     // Build the path to the requested file
-    std::string path = path_cat(doc_root, req.target());
-    if(req.target().back() == '/')
+    std::string path = path_cat(doc_root, target);
+    if(target.back() == '/')
         path.append("index.html");
 
     // Attempt to open the file
