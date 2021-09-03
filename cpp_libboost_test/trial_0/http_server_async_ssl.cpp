@@ -13,7 +13,7 @@
 //
 //------------------------------------------------------------------------------
 
-#include "beast/example/common/server_certificate.hpp"
+#include "../beast/example/common/server_certificate.hpp"
 
 #include <boost/beast/core.hpp>
 #include <boost/beast/http.hpp>
