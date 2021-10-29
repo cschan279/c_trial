@@ -10,6 +10,8 @@
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
+#include "can_io.h"
+
 int can_socket(char *io_name, int *s)
 {
 	struct sockaddr_can addr;
@@ -21,8 +23,8 @@ int can_socket(char *io_name, int *s)
 		perror("Socket");
 		return 1;
 	}
-	strcpy(ifr.ifr_name, io_name );
 
+	strcpy(ifr.ifr_name, io_name );
 	ioctl(*s, SIOCGIFINDEX, &ifr);
 
 	memset(&addr, 0, sizeof(addr));
@@ -48,34 +50,22 @@ int can_send(int s, int cid, int dlc, char *dat){
 	return 0;
 }
 
-int main(int argc, char **argv)
-{
-	int s0, s1;
-	if (can_socket("vcan0", &s0)) {
-		perror("Start 0");
-		return 1;
-	}
-	if (can_socket("vcan1", &s1)){
-		perror("Start 1");
-		return 1;
-	}
+int can_recv(int s, int *cid, int *dlc, char *dat){
+	struct can_frame frame;
+	int nbytes = read(s, &frame, sizeof(struct can_frame));
 
-	printf("can s: %d, %d\n", s0, s1);
-	
-	char data0[8] = {0x01, 0x10, 0x23, 0x32, 0x45, 0x54, 0x67, 0x76};
-	char data1[8] = {0x17, 0x26, 0x35, 0x44, 0x53, 0x62, 0x71, 0x80};
-	can_send(s0, 0x555, 8, data0);
-	can_send(s1, 0x666, 8, data1);
-	
-
-	if (close(s0) < 0) {
-		perror("Close");
+ 	if (nbytes < 0) {
+		perror("Read");
 		return 1;
 	}
-	if (close(s1) < 0) {
-		perror("Close");
-		return 1;
-	}
-
+	*cid = frame.can_id;
+	*dlc = frame.can_dlc;
+	memcpy(dat, frame.data, frame.can_dlc*sizeof(char));
 	return 0;
+}
+
+void print_hex_array(char *hex_array, int length) {
+	for (int i=0; i < length; i++) 
+		printf("%02X", hex_array[i]);
+	printf("\r\n");
 }

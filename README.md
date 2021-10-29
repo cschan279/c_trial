@@ -18,5 +18,5 @@ auto can1
 
 
 ref:  
-[https://www.beyondlogic.org/example-c-socketcan-code/](https://www.beyondlogic.org/example-c-socketcan-code/)  
-[https://github.com/craigpeacock/CAN-Examples](https://github.com/craigpeacock/CAN-Examples)
+[Guide](https://www.beyondlogic.org/example-c-socketcan-code/)  
+[Example code](https://github.com/craigpeacock/CAN-Examples)
