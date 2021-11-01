@@ -7,6 +7,8 @@
 #include <sys/ioctl.h>
 #include <sys/socket.h>
 
+#include <sys/select.h>
+
 #include <linux/can.h>
 #include <linux/can/raw.h>
 
@@ -36,6 +38,13 @@ int can_socket(char *io_name, int *s)
 		return 1;
 	}
 	return 0;
+}
+
+void set_timeout(int s, long sec, long usec){
+	struct timeval tv;
+	tv.tv_sec = sec;
+	tv.tv_usec = usec;
+	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
 int can_send(int s, int cid, int dlc, char *dat){

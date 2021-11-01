@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
     if (argc != 2) {
         printf("example:\n");
         printf(">testcan.o can0\n");
-        //return 1;
+        return 1;
     }
     char *port = (char*) argv[1];
     printf("Testing on %s\n", port);
@@ -29,6 +29,8 @@ int main(int argc, char **argv) {
         return 1;
     }
     
+    set_timeout(s, 1, 50000);
+
     char option = 'e';
     while (option != 'q') {
         option = get_option();
@@ -39,8 +41,8 @@ int main(int argc, char **argv) {
             printf("0x%03X [%d] ",cid, dlc);
             print_hex_array(dat, dlc);
         } else if (option == 's') {
-            char data[8] = {0x01, 0x10, 0x23, 0x32, 0x45, 0x54, 0x67, 0x76};
-            if (can_send(s, 0x555, 8, data)) return 1;
+            //char data[8] = {0x01, 0x10, 0x23, 0x32, 0x45, 0x54, 0x67, 0x76};
+            if (can_send(s, dummy_cid, dummy_dlc, dummy_data)) return 1;
         } else if (option == 'q') return 0;
     }
     return 0;
