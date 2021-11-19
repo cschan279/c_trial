@@ -37,10 +37,10 @@ int main(int argc, char **argv)
     if (!strcmp(argv[1], "tran")) {
         printf("Transmit\n");
         char data0[8] = {0x01, 0x10, 0x23, 0x32, 0x45, 0x54, 0x67, 0x76};
-        if (can_send(s0, 0x555, 8, data0)) return 1;
+        if (can_send(s0, 0x1FFFFFFF, 8, data0)) return 1;
         if (!strcmp(argv[2], "both")) {
             char data1[8] = {0x17, 0x26, 0x35, 0x44, 0x53, 0x62, 0x71, 0x80};
-            if (can_send(s1, 0x666, 8, data1)) return 1;
+            if (can_send(s1, 0x1FFFFFFF, 8, data1)) return 1;
         } 
     } else if (!strcmp(argv[1], "recv")) {
         printf("Received:\n");

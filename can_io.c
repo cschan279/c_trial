@@ -50,6 +50,7 @@ void set_timeout(int s, long sec, long usec){
 int can_send(int s, int cid, int dlc, char *dat){
 	struct can_frame frame;
 	frame.can_id = cid;
+	frame.can_id |= CAN_EFF_FLAG;
 	frame.can_dlc = dlc;
 	memcpy(frame.data, dat, dlc*sizeof(char));
 	if (write(s, &frame, sizeof(struct can_frame)) != sizeof(struct can_frame)) {
@@ -67,6 +68,7 @@ int can_recv(int s, int *cid, int *dlc, char *dat){
 		perror("Read");
 		return 1;
 	}
+	frame.can_id ^= CAN_EFF_FLAG;
 	*cid = frame.can_id;
 	*dlc = frame.can_dlc;
 	memcpy(dat, frame.data, frame.can_dlc*sizeof(char));
