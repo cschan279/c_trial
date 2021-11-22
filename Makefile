@@ -21,7 +21,7 @@ testcan: $(main_objects)
 
 test_objects = can_packing
 test:
-	rm $(test_objects).o
+	-rm $(test_objects).o
 	$(CC) -c $(test_objects).c -o $(test_objects).o
 	$(CC) test.c $(test_objects).o -o test.o
 	./test.o
