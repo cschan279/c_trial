@@ -3,7 +3,8 @@
 #include <string.h>
 #include <unistd.h>
 
-#include "can_packing.h"
+//#include "can_packing.h"
+#include "can_pack.h"
 
 void print_string(char *str, int *s){
     char ifr_name[16];
@@ -12,35 +13,39 @@ void print_string(char *str, int *s){
     *s = 1;
 }
 
-int test_can_id(){
-    __uint8_t prio = 0x5;
-    __uint8_t pf = 0x81;
-    __uint8_t ps = 0x81;
-    __uint8_t sa = 0x81;
-    printb_c(prio);
-    printb_c(pf);
-    printb_c(ps);
-    printb_c(sa);
-    printf("\n");
-    int cid = 0;
-    int res = can_id_encode(&cid, prio, pf, ps, sa);
-    printf(">>%X\n", cid);
-    if (res != 0) {
-        printf("Failed");
-        return -1;
-    }
-    printb(cid);
 
+int test_can_id(){
+    struct can_pack pack;
+    struct can_pack *packp;
+    packp = &pack;
+    pack.prio = 0x5;
+    pack.pf = 0x81;
+    pack.ps = 0x81;
+    pack.sa = 0x81;
+    printb_c(pack.prio);
+    printb_c(pack.pf);
+    printb_c(pack.ps);
+    printb_c(pack.sa);
+    printf("\n");
+    printf("Encode: ");
+    int res = can_id_encode(packp);
+    
+    if (res != 0) {
+        printf("Failed\n");
+        printb(pack.id);
+    } else {
+        printf("Success\n");
+        printb(pack.id);
+    }
+    
     printf("decode:\n");
-    __uint8_t prio2 = 0;
-    __uint8_t pf2 = 0;
-    __uint8_t ps2 = 0;
-    __uint8_t sa2 = 0;
-    can_id_decode(cid, &prio2, &pf2, &ps2, &sa2);
-    printb(prio2);
-    printb(pf2);
-    printb(ps2);
-    printb(sa2);
+    struct can_pack pack2;
+    pack2.id = 0x14818181;
+    can_id_decode(&pack2);
+    printb(pack2.prio);
+    printb(pack2.pf);
+    printb(pack2.ps);
+    printb(pack2.sa);
     printf("\n");
 
     return 0;
@@ -49,22 +54,8 @@ int test_can_id(){
 
 int main(int argc, char **argv)
 {
-    /*
-    int s = 0;
-    print_string("hello", &s);
-    printf("result: %d\n", s);
-    printf("%X\n", -1);
-    */
-    /*
-    unsigned char var = 0x81;
-    printb(var);
-    */
-    /*
-    char a = 0x81;
-    __uint8_t b = (__uint8_t)a;
-    printf("%x %x\n", a, b);
-    */
-    return test_can_id();
+    test_can_id();
+    
     
 
     return 0;
