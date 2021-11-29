@@ -47,6 +47,24 @@ void set_timeout(int s, long sec, long usec){
 	setsockopt(s, SOL_SOCKET, SO_RCVTIMEO, &tv, sizeof(tv));
 }
 
+void set_filter(int s, unsigned *ids, unsigned *masks, unsigned count){
+	struct can_filter rfilter[count];
+	for (int i=0; i< count; i++){
+		rfilter[i].can_id = ids[i];
+		rfilter[i].can_mask = masks[i];
+	}
+
+	/*
+	struct can_filter rfilter[2];
+
+	rfilter[0].can_id   = 0x80000F00;
+	rfilter[0].can_mask = 0x8000FF00;
+	rfilter[1].can_id   = 0x80002F00;
+	rfilter[1].can_mask = 0x8000FF00;
+	*/
+	setsockopt(s, SOL_CAN_RAW, CAN_RAW_FILTER, &rfilter, sizeof(rfilter));
+}
+
 int can_send(int s, int cid, int dlc, char *dat){
 	struct can_frame frame;
 	frame.can_id = cid;

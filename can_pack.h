@@ -18,5 +18,4 @@ int can_id_encode(struct can_pack *pack);
 int can_id_decode(struct can_pack *pack);
 
 void printb(int var);
-
 void printb_c(__uint8_t var);

@@ -3,6 +3,9 @@
 #include <string.h>
 #include "can_io.h"
 
+#define CAN_FILTER_ID {0x80000F00, 0x80002F00}
+#define CAN_FILTER_MASK {0x8000FF00, 0x8000FF00}
+
 
 int main(int argc, char **argv)
 {
@@ -30,6 +33,9 @@ int main(int argc, char **argv)
             perror("Start 0");
             return 1;
         }
+        unsigned ids[] = CAN_FILTER_ID;
+        unsigned masks[] = CAN_FILTER_MASK;
+        set_filter(s0, ids, masks, (unsigned)sizeof(ids)/4);
     }
 
     printf("Initialized: %d %d\n", s0, s1);

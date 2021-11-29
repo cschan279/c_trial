@@ -19,7 +19,7 @@ main: $(main_objects)
 testcan: $(main_objects)
 	$(CC) testcan.c $(main_objects) -o testcan.o
 
-test_objects = can_pack
+test_objects = can_io
 test:
 	-rm $(test_objects).o
 	$(CC) -c $(test_objects).c -o $(test_objects).o

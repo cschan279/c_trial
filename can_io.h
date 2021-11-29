@@ -18,3 +18,4 @@ int can_send(int s, int cid, int dlc, char *dat);
 int can_recv(int s, int *cid, int *dlc, char *dat);
 void print_hex_array(char *hex_array, int length);
 
+void set_filter(int s, unsigned *ids, unsigned *masks, unsigned count);
