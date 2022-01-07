@@ -1,4 +1,5 @@
 CC=gcc
+PP=g++
 #CFLAGS=-L/lib/x86_64-linux-gnu/
 #CFLAGS+=-lmariadb -lz
 
@@ -19,12 +20,16 @@ main: $(main_objects)
 testcan: $(main_objects)
 	$(CC) testcan.c $(main_objects) -o testcan.o
 
-test_objects = can_io
+#test_objects = can_io
 test:
-	-rm $(test_objects).o
-	$(CC) -c $(test_objects).c -o $(test_objects).o
-	$(CC) test.c $(test_objects).o -o test.o
-	./test.o
+	$(CC) test2.c -o test.o
+#	$(CC) -c $(test_objects).c -o $(test_objects).o
+#	$(CC) test.c $(test_objects).o -o test.o
+#	./test.o
+testpp:
+	$(PP) test.cpp -o test.obj
+	./test.obj
+
 
 clean:
 	rm *.o
