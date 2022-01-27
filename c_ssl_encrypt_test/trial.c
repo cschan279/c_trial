@@ -23,7 +23,7 @@ int main (int argc, unsigned char **argv[])
         plaintext = (unsigned char *)argv[1];
     } else {
         plaintext = 
-            (unsigned char *)"Message to be encrypted";
+            (unsigned char *)"Message\n to be encaaaaaaaaaaaaaaaaaaaarypted~~~\n~~~";
     }
     printf("Input text: %s\n", plaintext);
     /*
@@ -50,6 +50,8 @@ int main (int argc, unsigned char **argv[])
     }
     printf("\n");
     BIO_dump_fp (stdout, (const char *)ciphertext, ciphertext_len);
+
+    printf("Ciphertext Length:%ld\n", strlen(ciphertext));
 
     /* Decrypt the ciphertext */
     decryptedtext_len = decrypt(ciphertext, ciphertext_len, key, iv,
