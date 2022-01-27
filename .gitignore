@@ -1,3 +1,11 @@
+*
+!/**/
+!*.*
+
+
 *.obj
 *.o
 *.bin
+
+
+CMakeFiles
